@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:,">
+<title>四级词汇巧记</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,700;1,6..72,500&family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* 勃艮第红主题（浅色）：酒红为主色，底色带一点酒红暖调 */
+  --bg:#faf5f2; --surface:#ffffff; --surface2:#fdf1ec; --ink:#2a1216; --muted:#75616a; --line:#ecd9d5;
+  --red:#800020; --red-bright:#9c1c31; --red-soft:#f9e3e4; --teal:#0f766e; --teal-soft:#e0f2f0; --amber:#b45309; --amber-soft:#fdf0d5;
+  --hero-bg:#5c0a1e; --hero-ink:#fff5f0;
+  --shadow:0 12px 32px rgba(92,10,30,.10); --radius:20px;
+}
+@media(prefers-color-scheme:dark){
+  /* 深色模式：底色压到近黑酒红，卡面明显提亮一档 + 描边加亮，
+     保证卡片区域在 iOS 深色下轮廓和文字都看得清，不再和背景糊成一片 */
+  :root{
+    --bg:#150a0e; --surface:#2e1a20; --surface2:#382128; --ink:#f8edef; --muted:#cdb0b6; --line:#5b3540;
+    --red:#f0768a; --red-bright:#f0768a; --red-soft:#4a232c; --teal:#5ec9bd; --teal-soft:#173b37; --amber:#f0b35c; --amber-soft:#423014;
+    --hero-bg:#4a0817; --hero-ink:#fff5f0;
+    --shadow:0 14px 34px rgba(0,0,0,.55);
+  }
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans SC",system-ui,-apple-system,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit} button,input{font:inherit}
+button,[role="button"]{min-height:44px}
+.serif{font-family:"Noto Serif SC",serif} .en{font-family:"Newsreader",Georgia,serif}
+
+/* header */
+.topbar{border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1120px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-weight:900;letter-spacing:.02em;font-size:15px;display:flex;gap:8px;align-items:center}
+.logo i{width:28px;height:28px;border-radius:8px;background:var(--red);color:#fff;display:grid;place-items:center;font-style:normal;font-family:"Newsreader",serif;font-weight:700}
+.nav{display:flex;gap:4px;overflow:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{text-decoration:none;font-size:13px;font-weight:700;color:var(--muted);padding:10px 12px;border-radius:999px;white-space:nowrap}
+.nav a:hover{background:var(--surface);color:var(--ink)}
+
+/* hero */
+.wrap{max-width:1120px;margin:0 auto;padding:0 18px 44px}
+.hero{padding:38px 0 8px;display:grid;grid-template-columns:1.25fr .75fr;gap:28px;align-items:end}
+.hero h1{font-family:"Noto Serif SC",serif;font-size:clamp(38px,6vw,64px);line-height:1.05;margin:10px 0 14px;letter-spacing:-.02em}
+.hero h1 em{color:var(--red);font-style:normal;position:relative}
+.hero p{color:var(--muted);font-size:16px;margin:0;max-width:560px}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px}
+/* 英雄卡固定用深勃艮第底 + 米白字，不随深/浅色模式翻转，深色模式下也不会白底白字 */
+.hero-card{background:var(--hero-bg);color:var(--hero-ink);border:1px solid color-mix(in srgb,var(--hero-ink) 22%,transparent);border-radius:22px;padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.hero-card .en{font-size:28px;line-height:1.1}
+.hero-card p{color:rgba(255,245,240,.82);font-size:13px;margin:8px 0 0}
+.hero-card small{opacity:.6}
+/* 今日台词：每天按日期轮换一句，游戏 / 电影 / 文学混排 */
+.daily-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.daily-date{font-size:11px;font-weight:700;opacity:.65;white-space:nowrap}
+.daily-en{font-family:"Newsreader",Georgia,serif;font-size:clamp(21px,2.6vw,27px);line-height:1.28;margin-top:10px}
+.daily-en.long{font-size:clamp(18px,2.1vw,22px);line-height:1.4}
+.daily-zh{font-family:"Noto Serif SC",serif;font-size:16.5px;line-height:1.55;margin-top:9px}
+.daily-note{border-top:1px solid color-mix(in srgb,var(--hero-ink) 22%,transparent);padding-top:9px}
+.daily-note b{color:#ffb3a7;font-weight:700}
+.daily-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.daily-actions .btn{padding:8px 13px;font-size:13px}
+.btn.on-dark{background:#fff;color:#111;border-color:#fff}
+.btn.on-dark-ghost{background:transparent;color:var(--hero-ink);border-color:color-mix(in srgb,var(--hero-ink) 45%,transparent)}
+@keyframes dailyIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.daily-anim{animation:dailyIn .35s ease both}
+.stats{display:flex;gap:18px;margin-top:18px;flex-wrap:wrap}
+.stat b{font-size:20px;display:block;line-height:1} .stat span{font-size:12px;color:var(--muted)}
+.hero-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 16px;border-radius:999px;font-weight:800;font-size:14px;cursor:pointer;transition:transform .18s ease, background .18s ease, box-shadow .18s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.teal{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.ghost{background:transparent}
+
+/* controls */
+.controls{padding:14px 0 10px;margin-top:22px;border-top:1px solid var(--line)}
+.controls-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:0 14px}
+.search input{border:0;outline:0;background:transparent;width:100%;height:44px;color:var(--ink)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s ease;min-height:38px}
+.chip.active{background:var(--red);color:#fff;border-color:var(--red)}
+.progressbar{height:6px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:12px}
+.progressbar i{display:block;height:100%;background:var(--teal);width:0%;transition:width .5s cubic-bezier(.22,1,.36,1)}
+.progress-text{font-size:12px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between}
+
+/* cards */
+.section{padding:28px 0 6px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:14px}
+.section-head h2{font-family:"Noto Serif SC",serif;font-size:26px;margin:0;line-height:1.2}
+.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px;max-width:520px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.flip{perspective:1200px;height:338px;cursor:pointer;outline:none}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .62s cubic-bezier(.22,.9,.28,1)}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+.face.back{transform:rotateY(180deg);background:var(--surface2);overflow-y:auto;scrollbar-width:none}
+.face.back::-webkit-scrollbar{display:none}
+.face:hover{border-color:color-mix(in srgb,var(--red) 45%,var(--line))}
+.tag{align-self:flex-start;font-size:11px;font-weight:900;letter-spacing:.06em;padding:4px 8px;border-radius:999px;background:var(--red-soft);color:var(--red)}
+.tag.teal{background:var(--teal-soft);color:var(--teal)} .tag.amber{background:var(--amber-soft);color:var(--amber)}
+.word{font-family:"Newsreader",serif;font-size:36px;font-weight:700;line-height:1;margin:14px 0 4px;letter-spacing:-.02em}
+.ph{color:var(--muted);font-size:13px}
+.pos{font-size:12px;color:var(--muted);margin-top:6px}
+.front-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center}
+.source{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.flip-hint{font-size:12px;font-weight:800;color:var(--red)}
+.speak{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface2);color:var(--ink);cursor:pointer;display:grid;place-items:center;font-size:16px;transition:background .18s ease,color .18s ease,transform .18s ease}
+.speak.playing{background:var(--red-bright);border-color:var(--red-bright);animation:speakPulse .7s ease-in-out infinite alternate}
+.mini-btn.playing{background:var(--red-bright);color:#fff;border-color:var(--red-bright)}
+@keyframes speakPulse{from{transform:scale(1)}to{transform:scale(1.14)}}
+.speak-toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,16px);background:var(--hero-bg);color:var(--hero-ink);border:1px solid color-mix(in srgb,var(--hero-ink) 25%,transparent);font-size:13px;font-weight:700;padding:10px 16px;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:60;max-width:calc(100vw - 32px);text-align:center}
+.speak-toast.show{opacity:1;transform:translate(-50%,0)}
+.meaning{font-weight:900;font-size:17px;line-height:1.4;margin:8px 0}
+.trick{background:var(--surface);border:1px dashed color-mix(in srgb,var(--amber) 55%,var(--line));border-radius:12px;padding:10px 11px;font-size:13px;line-height:1.55}
+@media(prefers-color-scheme:dark){ .trick{background:#241419} }
+.trick b{color:var(--amber)}
+/* 原句块：与巧记块分开排版，原句（原文）+ 中译各占一行 */
+.qblock{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 11px 10px;margin-top:10px}
+.q-label{font-size:10px;font-weight:900;letter-spacing:.07em;color:var(--red);margin-bottom:3px}
+.quote{font-family:"Newsreader",serif;font-size:14.5px;line-height:1.45}
+.quote.q-cn{font-family:"Noto Serif SC",serif;font-size:15px;line-height:1.55}
+.quote-zh{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.back-foot{margin-top:auto;display:flex;gap:8px}
+.mini-btn{flex:1;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:800;font-size:13px;cursor:pointer;padding:9px 10px;transition:all .18s}
+.mini-btn.known{background:var(--teal);color:#fff;border-color:var(--teal)}
+.flip.is-known .face.front{border-color:var(--teal)}
+.flip.is-known .word::after{content:" ✓";color:var(--teal);font-size:22px}
+@keyframes popIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.grid .flip{animation:popIn .45s cubic-bezier(.22,1,.36,1) both}
+
+/* quiz */
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:22px;display:grid;grid-template-columns:.9fr 1.1fr;gap:20px}
+.quiz-word{font-family:"Newsreader",serif;font-size:44px;font-weight:700;line-height:1}
+.opts{display:grid;gap:10px}
+.opt{width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-weight:700;cursor:pointer;transition:all .18s}
+.opt:hover{border-color:var(--ink)}
+.opt.correct{background:#dcfce7;border-color:#16a34a;color:#14532d}
+.opt.wrong{background:#fee2e2;border-color:#ef4444;color:#7f1d1d}
+@media(prefers-color-scheme:dark){.opt.correct{background:#14532d;color:#dcfce7}.opt.wrong{background:#450a0a;color:#fee2e2}}
+.feedback{font-size:13px;color:var(--muted);min-height:22px;margin-top:8px}
+
+.empty{grid-column:1/-1;text-align:center;padding:36px;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:18px}
+
+@media(max-width:860px){ .hero{grid-template-columns:1fr} .grid{grid-template-columns:repeat(2,1fr)} .quiz{grid-template-columns:1fr} }
+@media(max-width:540px){ .grid{grid-template-columns:1fr} .flip{height:330px} .hero{padding-top:24px} .nav a{padding:10px 8px} .logo span{display:none} }
+@media(prefers-color-scheme:dark){
+  /* 深色下主色是亮玫瑰红，按钮改深色字，对比才够 */
+  .btn.primary,.btn.teal,.chip.active,.logo i,.mini-btn.known{color:#2a0d13}
+  .speak.playing,.mini-btn.playing{color:#2a0d13}
+  .flip.is-known .face.front{border-color:var(--teal)}
+}
+@media(prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important;scroll-behavior:auto!important} }
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+  <div class="logo"><i>A</i><span>四级词汇巧记</span></div>
+  <nav class="nav">
+    <a href="#cards">单词卡</a><a href="#quiz">小测验</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <span class="pill">● 背是背不完的，撞是能撞上的</span>
+      <h1>记不住单词？<br>你只是没跟它<em>照过面</em>。</h1>
+      <div class="hero-actions">
+        <button class="btn primary" onclick="document.getElementById('cards').scrollIntoView({behavior:'smooth'})">开始翻卡 →</button>
+        <button class="btn" onclick="shuffleWords()">🎲 随机抽一张</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>24</b><span>精选高频词</span></div>
+        <div class="stat"><b id="statKnown">0</b><span>已记住（本次）</span></div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="daily-head"><small>今日台词 · DAILY LINE</small><span class="daily-date" id="dailyDate"></span></div>
+      <div id="dailyBody">
+        <div class="daily-en" id="dailyEn"></div>
+        <div class="daily-zh" id="dailyZh"></div>
+        <p id="dailyFrom"></p>
+        <p class="daily-note" id="dailyNote"></p>
+      </div>
+      <div class="daily-actions">
+        <button class="btn on-dark" id="dailyWordBtn" onclick="jumpToWord(dailyWord())" style="display:none">去看这张卡 →</button>
+        <button class="btn on-dark-ghost" onclick="nextDaily()">换一句 ↻</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTROLS -->
+  <div class="controls" id="cards">
+    <div class="controls-row">
+      <label class="search">⌕ <input id="searchInput" type="search" placeholder="搜单词、中文、作品名…" oninput="render()"></label>
+      <button class="btn" onclick="shuffleWords()">打乱顺序</button>
+      <button class="btn teal" onclick="resetKnown()">重置进度</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="progressbar"><i id="progressFill"></i></div>
+    <div class="progress-text"><span id="progressLabel">已记住 0 / 24</span></div>
+  </div>
+
+  <!-- CARDS -->
+  <section class="section">
+    <div class="section-head"><div><h2>翻牌区</h2></div></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="section" id="quiz">
+    <div class="section-head"><div><h2>30 秒小测验</h2></div><button class="btn" onclick="nextQuiz()">下一题 ↻</button></div>
+    <div class="quiz">
+      <div>
+        <div style="font-size:12px;font-weight:900;letter-spacing:.07em;color:var(--red)">这词是什么意思？</div>
+        <div class="quiz-word" id="quizWord">—</div>
+        <div id="quizPh" style="color:var(--muted);margin-top:6px"></div>
+        <div id="quizScore" style="margin-top:14px;font-weight:800"></div>
+        <div class="feedback" id="quizFeedback"></div>
+      </div>
+      <div class="opts" id="quizOpts"></div>
+    </div>
+  </section>
+
+</main>
+<div class="speak-toast" id="speakToast" role="status" aria-live="polite"></div>
+
+<script>
+const WORDS=[
+{w:"inevitable",ph:"/ɪnˈevɪtəbl/",pos:"adj.",zh:"不可避免的；必然发生的",cat:"科幻与电影",tag:"teal",source:"《复仇者联盟4》",qt:"原句",q:"“I am inevitable.”",qz:"中译：「我就是天命。」（官方字幕）",trick:"<b>in-（不）+ evit（躲开，evade）+ -able</b>：躲不开的，就是必然的。"},
+{w:"profound",ph:"/prəˈfaʊnd/",pos:"adj.",zh:"深刻的；深远的；渊博的",cat:"文学经典",tag:"",source:"《白鲸》 · 梅尔维尔",qt:"原句",q:"“But vain to popularize profundities, and all truth is profound.”",qz:"中译：「一切真理都是深刻的。」",trick:"<b>pro-（向前）+ fund（底）</b>：深到见底，才叫深刻。"},
+{w:"encounter",ph:"/ɪnˈkaʊntə(r)/",pos:"v./n.",zh:"遭遇；偶然遇见；相遇",cat:"文学经典",tag:"",source:"玛雅·安杰卢",qt:"原句",q:"“You may encounter many defeats, but you must not be defeated.”",qz:"中译：「你可以遭遇许多失败，但绝不能被打败。」",trick:"<b>en- + counter（迎面）</b>：迎面撞上，就是遭遇。"},
+{w:"consequence",ph:"/ˈkɒnsɪkwəns/",pos:"n.",zh:"结果；后果；重要性",cat:"科幻与电影",tag:"teal",source:"《蝴蝶效应》",qt:"原句 · 影片标语",q:"“Such minor changes, such huge consequences.”",qz:"中译：「如此微小的改变，如此巨大的后果。」",trick:"<b>con-（一起）+ sequence（顺序）</b>：顺着排下来的，就是后果。"},
+{w:"ambiguous",ph:"/æmˈbɪɡjuəs/",pos:"adj.",zh:"模棱两可的；含糊不清的",cat:"文学经典",tag:"",source:"波伏瓦《模糊性的道德》",qt:"原句",q:"“To say that it is ambiguous is to assert that its meaning is never fixed, that it must be constantly won.”",qz:"中译：「说它是模糊的，就是说它的意义从不固定，必须不断去赢得。」",trick:"<b>ambi-（两边）</b>：两边都能解释，就是模棱两可。"},
+{w:"solitude",ph:"/ˈsɒlɪtjuːd/",pos:"n.",zh:"孤独；独处（带一点享受）",cat:"文学经典",tag:"",source:"《百年孤独》",qt:"原句 · 全书最后一句（Rabassa 英译）",q:"“…races condemned to one hundred years of solitude did not have a second opportunity on earth.”",qz:"中译（范晔）：「注定经受百年孤独的家族不会再有第二次机会在大地上出现。」",trick:"记 <b>solo（独奏）</b>：一个人独奏的状态。"},
+{w:"subtle",ph:"/ˈsʌtl/",pos:"adj.",zh:"微妙的；不易察觉的；细腻的",cat:"文学经典",tag:"",source:"爱因斯坦",qt:"原句 · 1921 年语",q:"“Subtle is the Lord, but malicious He is not.”",qz:"中译：「上帝微妙，却不怀恶意。」",trick:"<b>b 不发音</b>：subtle 的 b，微妙到听不见。"},
+{w:"dilemma",ph:"/dɪˈlemə/",pos:"n.",zh:"困境；进退两难",cat:"文学经典",tag:"",source:"门肯",qt:"原句",q:"“Life is a constant oscillation between the sharp horns of dilemmas.”",qz:"中译：「人生就是在两难的尖角之间不停摆动。」",trick:"<b>di-（二）+ lemma（命题）</b>：两个选项，选哪个都难。"},
+{w:"curious",ph:"/ˈkjʊəriəs/",pos:"adj.",zh:"好奇的；奇特的",cat:"文学经典",tag:"",source:"《爱丽丝梦游仙境》",qt:"原句",q:"“Curiouser and curiouser!” cried Alice.",qz:"中译：「“越来越离奇了！”爱丽丝喊道。」",trick:"和 <b>cura（在意）</b> 同源：太在意，就会好奇。"},
+{w:"absurd",ph:"/əbˈsɜːd/",pos:"adj.",zh:"荒谬的；可笑的",cat:"文学经典",tag:"",source:"加缪《西西弗神话》",qt:"原句",q:"“The absurd is born of this confrontation between the human need and the unreasonable silence of the world.”",qz:"中译：「荒谬诞生于人的需要与世界无理的沉默之间的对峙。」",trick:"记画面：<b>人想要意义，世界一声不吭</b>——这落差就是 absurd。"},
+{w:"wander",ph:"/ˈwɒndə(r)/",pos:"v.",zh:"漫游；闲逛；走神",cat:"文学经典",tag:"",source:"《指环王》 · 托尔金",qt:"原句",q:"“Not all those who wander are lost.”",qz:"中译：「并非所有游荡的人都迷失了方向。」",trick:"和 <b>wonder</b> 只差一个字母：wander 脚在走，wonder 脑在想。"},
+{w:"nostalgia",ph:"/nɒˈstældʒə/",pos:"n.",zh:"怀旧；乡愁",cat:"科幻与电影",tag:"teal",source:"《午夜巴黎》",qt:"原句",q:"“Nostalgia is denial. Denial of the painful present.”",qz:"中译：「怀旧是否认，否认痛苦的现在。」",trick:"<b>nost（回家）+ algia（痛）</b>：想家想到有点痛。"},
+{w:"anxiety",ph:"/æŋˈzaɪəti/",pos:"n.",zh:"焦虑；担忧",cat:"情感与心理",tag:"amber",source:"《头脑特工队2》",qt:"原句",q:"“Oh my gosh! I'm Anxiety. Where can I put my stuff?”",qz:"中译：「天哪！我是焦虑。我的东西能放哪儿？」",trick:"新角色的名字就叫 <b>Anxiety</b>：橙色、头发炸开、一进门就连环发问。"},
+{w:"empathy",ph:"/ˈempəθi/",pos:"n.",zh:"共情；同理心",cat:"情感与心理",tag:"amber",source:"布琳·布朗",qt:"原句",q:"“Empathy fuels connection. Sympathy drives disconnection.”",qz:"中译：「共情促成连接，同情造成疏离。」",trick:"<b>em-（进入）+ pathy（感受）</b>：走进别人的感受里。"},
+{w:"fragile",ph:"/ˈfrædʒaɪl/",pos:"adj.",zh:"易碎的；脆弱的",cat:"情感与心理",tag:"amber",source:"快递盒标识",qt:"标识原文",q:"“FRAGILE · HANDLE WITH CARE”",qz:"中译：「易碎品 · 小心轻放」",trick:"拆快递时见过无数次：<b>FRAGILE</b> 就是易碎。"},
+{w:"resilient",ph:"/rɪˈzɪliənt/",pos:"adj.",zh:"有韧性的；能迅速恢复的",cat:"情感与心理",tag:"amber",source:"伯纳德·威廉斯",qt:"原句",q:"“Man never made any material as resilient as the human spirit.”",qz:"中译：「人造不出任何比人的精神更有韧性的材料。」",trick:"<b>re-（回）+ sil（跳）</b>：能弹回来的，就是有韧性。"},
+{w:"reluctant",ph:"/rɪˈlʌktənt/",pos:"adj.",zh:"不情愿的；勉强的",cat:"生活热点",tag:"amber",source:"周一早晨的你",qt:"例句",q:"“He was reluctant to get out of bed on Monday morning.”",qz:"中译：「周一早上，他不情愿起床。」",trick:"<b>re-（往回）+ luct（挣扎）</b>：心里往回挣，就是不情愿。"},
+{w:"enthusiastic",ph:"/ɪnˌθjuːziˈæstɪk/",pos:"adj.",zh:"热情的；热心的",cat:"生活热点",tag:"amber",source:"演唱会现场",qt:"例句",q:"“The fans were enthusiastic from the very first song.”",qz:"中译：「第一首歌起，全场就上头了。」",trick:"词根藏着 <b>theo（神）</b>：像被神附体一样上头。"},
+{w:"vanish",ph:"/ˈvænɪʃ/",pos:"v.",zh:"消失；突然不见",cat:"生活热点",tag:"amber",source:"魔术 · 悬疑片",qt:"例句",q:"“The magician waved his hand, and the rabbit vanished into thin air.”",qz:"中译：「魔术师一挥手，兔子凭空消失了。」",trick:"魔术师一挥手，东西 <b>vanish</b>：凭空没了。"},
+{w:"illuminate",ph:"/ɪˈluːmɪneɪt/",pos:"v.",zh:"照亮；阐明；启发",cat:"文学经典",tag:"",source:"阿奎那《神学大全》",qt:"原句",q:"“Better to illuminate than merely to shine.”",qz:"中译：「照亮别人，胜过只让自己发光。」",trick:"<b>il- + lumin（光）+ -ate</b>：给光，就是照亮。"},
+{w:"artificial",ph:"/ˌɑːtɪˈfɪʃl/",pos:"adj.",zh:"人造的；人工的；虚假的",cat:"生活热点",tag:"amber",source:"AI 热门话题",qt:"例句",q:"“AI stands for Artificial Intelligence.”",qz:"中译：「AI 就是“人工智能”的英文缩写。」",trick:"<b>AI</b> 的 A 就是 artificial：Artificial Intelligence。"},
+{w:"sustainable",ph:"/səˈsteɪnəbl/",pos:"adj.",zh:"可持续的；能长期维持的",cat:"生活热点",tag:"amber",source:"双碳 · 环保话题",qt:"例句",q:"“We need a more sustainable way to travel.”",qz:"中译：「我们需要一种更可持续的旅行方式。」",trick:"<b>sustain（维持）+ -able</b>：能一直维持下去的。"},
+{w:"phenomenon",ph:"/fɪˈnɒmɪnən/",pos:"n.",zh:"现象；非凡的人/事（复数 phenomena）",cat:"生活热点",tag:"amber",source:"新闻标题 · 爆红现象",qt:"例句",q:"“The show became a cultural phenomenon overnight.”",qz:"中译：「这部剧一夜之间成了文化现象。」",trick:"单数 <b>phenomenon</b>，复数 <b>phenomena</b>，结尾变 a。"},
+{w:"compromise",ph:"/ˈkɒmprəmaɪz/",pos:"v./n.",zh:"妥协；让步；折中",cat:"生活热点",tag:"amber",source:"宿舍生活实录",qt:"例句",q:"“They reached a compromise on the air-conditioner temperature: 24 degrees.”",qz:"中译：「空调开几度最后折中：24 度。」",trick:"<b>com-（一起）+ promise（承诺）</b>：各退一步，一起承诺。"},
+];
+
+let filterCat="全部", known=new Set(), flipped=new Set(), speakingWord=null;
+const cats=["全部","文学经典","科幻与电影","生活热点","情感与心理"];
+const chipsEl=document.getElementById('chips');
+function renderChips(){ chipsEl.innerHTML=cats.map(c=>`<button class="chip ${c===filterCat?'active':''}" onclick="setCat('${c}')">${c}</button>`).join('') }
+function setCat(c){ filterCat=c; renderChips(); render(); }
+function filtered(){
+  const q=(document.getElementById('searchInput').value||"").trim().toLowerCase();
+  return WORDS.filter(x=>{
+    const okCat=filterCat==="全部"||x.cat===filterCat;
+    const okQ=!q||x.w.toLowerCase().includes(q)||x.zh.includes(q)||x.source.toLowerCase().includes(q)||x.cat.includes(q);
+    return okCat&&okQ;
+  });
+}
+function render(){
+  const list=filtered();
+  const grid=document.getElementById('grid');
+  if(!list.length){ grid.innerHTML=`<div class="empty">没找到，换个关键词试试。</div>`; }
+  else{
+    grid.innerHTML=list.map((x,i)=>`
+    <article class="flip ${flipped.has(x.w)?'flipped':''} ${known.has(x.w)?'is-known':''}" data-w="${x.w}" tabindex="0" role="button" aria-label="${x.w} 单词卡，点击翻转" style="animation-delay:${Math.min(i*35,280)}ms" onclick="flipCard(event,'${x.w}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(event,'${x.w}')}">
+      <div class="flip-inner">
+        <div class="face front">
+          <span class="tag ${x.tag}">${x.cat}</span>
+          <div class="word">${x.w}</div>
+          <div class="ph">${x.ph} · ${x.pos}</div>
+          <div class="pos">出自 ${x.source}</div>
+          <div class="front-foot"><span class="source">👆 点卡片看巧记</span><button class="speak ${speakingWord===x.w?'playing':''}" data-speak="${x.w}" aria-label="朗读 ${x.w}" onclick="speakWord(event,'${x.w}')">🔊</button></div>
+        </div>
+        <div class="face back">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span class="en" style="font-weight:700;font-size:18px">${x.w}</span><span style="font-size:11px;color:var(--muted)">点任意处翻回</span></div>
+          <div class="meaning">${x.zh}</div>
+          <div class="qblock">
+            <div class="q-label">${x.qt||'原句'} · ${x.source}</div>
+            <div class="quote ${x.qcn?'q-cn':''}">${x.q}</div>
+            ${x.qz?`<div class="quote-zh">${x.qz}</div>`:''}
+          </div>
+          <div class="trick">💡 巧记：${x.trick}</div>
+          <div class="back-foot">
+            <button class="mini-btn known-btn ${known.has(x.w)?'known':''}" onclick="toggleKnown(event,'${x.w}')">${known.has(x.w)?'✓ 已记住':'记住了'}</button>
+            <button class="mini-btn ${speakingWord===x.w?'playing':''}" data-speak="${x.w}" onclick="speakWord(event,'${x.w}')">${speakingWord===x.w?'🔊 播放中…':'🔊 再听一次'}</button>
+          </div>
+        </div>
+      </div>
+    </article>`).join('');
+  }
+  updateProgress();
+}
+/* 翻卡只切当前这张卡的 class，不重渲染列表——其余卡片、进度、滚动位置全都不动，
+   不再有“整页重新加载”的感觉；打勾同理，只同步这一张卡 + 进度条。 */
+function cardEl(w){ return document.querySelector('.flip[data-w="'+w+'"]'); }
+function flipCard(e,w){ if(e.target.closest('button')) return; flipped.has(w)?flipped.delete(w):flipped.add(w); e.currentTarget.classList.toggle('flipped',flipped.has(w)); }
+function syncKnown(w){ const el=cardEl(w); if(!el) return; const on=known.has(w); el.classList.toggle('is-known',on); const b=el.querySelector('.known-btn'); if(b){ b.classList.toggle('known',on); b.textContent=on?'✓ 已记住':'记住了'; } }
+/* 发音：在线真人发音音频优先（App 内嵌 WebView 里 speechSynthesis 经常静默失效），
+   音频失败再退回系统语音合成；全程有按钮动画 + toast 反馈，不再“点了没反应”。 */
+let ttsAudio=null, speakToastTimer=null;
+function showSpeakToast(msg,ms){
+  const t=document.getElementById('speakToast'); if(!t) return;
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(speakToastTimer);
+  speakToastTimer=setTimeout(()=>t.classList.remove('show'), ms||1800);
+}
+function setSpeakState(w){
+  speakingWord=w;
+  document.querySelectorAll('[data-speak]').forEach(b=>{
+    const on=b.getAttribute('data-speak')===w;
+    b.classList.toggle('playing',on);
+    if(b.classList.contains('mini-btn')) b.textContent=on?'🔊 播放中…':'🔊 再听一次';
+  });
+}
+function clearSpeakState(w){ if(speakingWord===w) setSpeakState(null); }
+function speakWord(e,w){
+  if(e) e.stopPropagation();
+  setSpeakState(w);
+  showSpeakToast('🔊 正在朗读：'+w,1400);
+  // 主通道：有道词典真人发音音频流（美式 type=2），<audio> 在沙箱 iframe / WebView 里也能播
+  try{
+    if(ttsAudio){ ttsAudio.pause(); ttsAudio.removeAttribute('src'); }
+    const a=new Audio('https://dict.youdao.com/dictvoice?audio='+encodeURIComponent(w)+'&type=2');
+    ttsAudio=a;
+    a.onended=()=>clearSpeakState(w);
+    a.onerror=()=>fallbackSpeak(w);
+    const p=a.play();
+    if(p&&typeof p.catch==='function') p.catch(()=>fallbackSpeak(w));
+  }catch(_){ fallbackSpeak(w); }
+}
+function fallbackSpeak(w){
+  try{
+    if(!('speechSynthesis' in window)){ setSpeakState(null); showSpeakToast('当前环境不支持发音，检查一下网络或换 Safari/Chrome 打开',2600); return; }
+    const synth=window.speechSynthesis;
+    synth.cancel();
+    // cancel() 后同一帧立刻 speak() 会被 Chrome 连新朗读一起取消，隔一帧再说
+    setTimeout(()=>{
+      try{
+        if(synth.paused) synth.resume();
+        const u=new SpeechSynthesisUtterance(w);
+        u.lang='en-US'; u.rate=.88;
+        const vs=synth.getVoices();
+        const v=vs.find(v=>/^en[-_]US/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang));
+        if(v) u.voice=v;
+        u.onend=()=>clearSpeakState(w);
+        u.onerror=()=>{ clearSpeakState(w); showSpeakToast('发音没播出来，再点一次试试',2200); };
+        synth.speak(u);
+      }catch(_){ clearSpeakState(w); }
+    },80);
+  }catch(_){ clearSpeakState(w); }
+}
+// 预热系统语音列表，避免第一次点击时 voices 还没加载完而静默
+if('speechSynthesis' in window){ try{ speechSynthesis.getVoices(); speechSynthesis.addEventListener&&speechSynthesis.addEventListener('voiceschanged',()=>speechSynthesis.getVoices()); }catch(_){} }
+function toggleKnown(e,w){ e.stopPropagation(); known.has(w)?known.delete(w):known.add(w); syncKnown(w); updateProgress(); }
+function updateProgress(){
+  const pct=Math.round(known.size/WORDS.length*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressLabel').textContent=`已记住 ${known.size} / ${WORDS.length}`;
+  document.getElementById('statKnown').textContent=known.size;
+}
+function shuffleWords(){ for(let i=WORDS.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [WORDS[i],WORDS[j]]=[WORDS[j],WORDS[i]]; } flipped.clear(); render(); document.getElementById('cards').scrollIntoView({behavior:'smooth'}); }
+function resetKnown(){ known.clear(); flipped.clear(); render(); }
+function jumpToWord(w){ filterCat="全部"; document.getElementById('searchInput').value=w; renderChips(); render(); flipped.add(w); render(); document.getElementById('cards').scrollIntoView({behavior:'smooth'}); }
+
+/* Quiz */
+let quizAnswer=null, quizRight=0, quizTotal=0;
+function nextQuiz(){
+  const pick=WORDS[Math.floor(Math.random()*WORDS.length)]; quizAnswer=pick;
+  const others=WORDS.filter(x=>x!==pick).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[pick,...others].sort(()=>Math.random()-.5);
+  document.getElementById('quizWord').textContent=pick.w;
+  document.getElementById('quizPh').textContent=pick.ph+" · "+pick.pos+" · 出自 "+pick.source;
+  document.getElementById('quizFeedback').textContent="";
+  document.getElementById('quizOpts').innerHTML=opts.map(o=>`<button class="opt" onclick="answerQuiz(this,'${o.w}')">${o.zh}</button>`).join('');
+  updateQuizScore();
+}
+function answerQuiz(btn,w){
+  quizTotal++;
+  const opts=document.querySelectorAll('#quizOpts .opt'); opts.forEach(b=>b.disabled=true);
+  if(w===quizAnswer.w){ btn.classList.add('correct'); quizRight++; document.getElementById('quizFeedback').textContent="✓ 对了。原句："+quizAnswer.q; known.add(quizAnswer.w); syncKnown(quizAnswer.w); updateProgress(); }
+  else{ btn.classList.add('wrong'); opts.forEach(b=>{ if(b.textContent===quizAnswer.zh) b.classList.add('correct'); }); document.getElementById('quizFeedback').textContent="差一点，正确答案是："+quizAnswer.zh+"。巧记："+quizAnswer.trick.replace(/<[^>]+>/g,''); }
+  updateQuizScore();
+}
+function updateQuizScore(){ document.getElementById('quizScore').textContent=quizTotal?`本次答对 ${quizRight} / ${quizTotal} 题`:""; }
+
+/* 今日台词：按本地日期取模轮换。注释只留单词 gloss，没有就不显示。 */
+const LINES=[
+{en:"“Extinguish the flame. See what burns beneath. Drop the blade. Let true steel speak.”",zh:"「灭烛见真火，忘剑得神兵。」",from:"《影之刃零》 · 魔渊",note:"<b>extinguish</b>：熄灭",word:""},
+{en:"“I am inevitable.”",zh:"「我就是天命。」",from:"《复仇者联盟4》 · 灭霸",note:"",word:"inevitable"},
+{en:"“Hesitation is defeat.”",zh:"「犹豫，就会败北。」",from:"《只狼》 · 苇名一心",note:"<b>hesitation</b>：犹豫",word:""},
+{en:"“Don't be sorry. Be better.”",zh:"「不要道歉。要做得更好。」",from:"《战神》 · 奎托斯",note:"",word:""},
+{en:"“Hope is a good thing, maybe the best of things, and no good thing ever dies.”",zh:"「希望是美好的，也许是人间至善，而美好的事物永不消逝。」",from:"《肖申克的救赎》 · 安迪",note:"",word:"resilient"},
+{en:"“Not all those who wander are lost.”",zh:"「并非所有游荡的人都迷失了方向。」",from:"《指环王》 · 托尔金",note:"",word:"wander"},
+{en:"“Winter is coming.”",zh:"「凛冬将至。」",from:"《权力的游戏》 · 史塔克家训",note:"",word:""},
+];
+let dailyIdx=null;
+function dailyBaseIdx(){ const n=new Date(); return Math.floor((new Date(n.getFullYear(),n.getMonth(),n.getDate())-new Date(n.getFullYear(),0,0))/864e5)%LINES.length; }
+function dailyWord(){ return dailyIdx===null?"":(LINES[dailyIdx].word||""); }
+function renderDaily(){
+  if(dailyIdx===null) dailyIdx=dailyBaseIdx();
+  const L=LINES[dailyIdx];
+  const n=new Date();
+  document.getElementById('dailyDate').textContent=(n.getMonth()+1)+"月"+n.getDate()+"日 · "+(dailyIdx+1)+" / "+LINES.length;
+  const en=document.getElementById('dailyEn'); en.textContent=L.en; en.classList.toggle('long',L.en.length>70);
+  document.getElementById('dailyZh').textContent=L.zh;
+  document.getElementById('dailyFrom').textContent="—— "+L.from;
+  const noteEl=document.getElementById('dailyNote'); noteEl.innerHTML=L.note||''; noteEl.style.display=L.note?'':'none';
+  document.getElementById('dailyWordBtn').style.display=L.word?'':'none';
+  const body=document.getElementById('dailyBody'); body.classList.remove('daily-anim'); void body.offsetWidth; body.classList.add('daily-anim');
+}
+function nextDaily(){ dailyIdx=(dailyIdx===null?dailyBaseIdx():dailyIdx+1)%LINES.length; renderDaily(); }
+
+renderChips(); render(); nextQuiz(); renderDaily();
+</script>
+</body>
+</html>
